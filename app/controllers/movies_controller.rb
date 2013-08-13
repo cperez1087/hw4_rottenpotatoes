@@ -36,6 +36,17 @@ class MoviesController < ApplicationController
     @movies = Movie.find_all_by_rating(@selected_ratings.keys, ordering)
   end
 
+  def similar_movies
+    @movie = Movie.find(params[:id])
+
+    if !@movie.director or @movie.director.blank?
+      flash[:notice] = "'#{@movie.title}' has no director info"
+      redirect_to movies_path
+    end
+
+    @movies = Movie.find_all_by_director(@movie.director)
+  end
+
   def new
     # default: render 'new' template
   end
@@ -63,5 +74,6 @@ class MoviesController < ApplicationController
     flash[:notice] = "Movie '#{@movie.title}' deleted."
     redirect_to movies_path
   end
+
 
 end
